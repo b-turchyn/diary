@@ -16,7 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
 
@@ -24,14 +23,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// fuckupCmd represents the fuckup command
-var fuckupCmd = &cobra.Command{
-	Use:   "fuckup",
-	Short: "You messed up. Explain why.",
-	Long: `You did something wrong. Write it out. Get it out of your system so you can learn
-	and grow from it.`,
+// logCmd represents the log command
+var logCmd = &cobra.Command{
+	Use:   "log",
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		input, err := lib.PromptForInput("Where'd you fuck up? ", args)
+		input, err := lib.PromptForInput("What are you doing now? ", args)
 
 		if err != nil {
 			fmt.Println(err)
@@ -39,7 +42,7 @@ var fuckupCmd = &cobra.Command{
 		}
 
 		db := lib.NewDB()
-		err = insertFuckup(db, input)
+		err = lib.InsertGenericText(db, "log", input)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(2)
@@ -50,19 +53,15 @@ var fuckupCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(fuckupCmd)
+	rootCmd.AddCommand(logCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// fuckupCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// logCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// fuckupCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-}
-
-func insertFuckup(db *sql.DB, text string) error {
-	return lib.InsertGenericText(db, "fuckups", text)
+	// logCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

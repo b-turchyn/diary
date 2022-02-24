@@ -16,12 +16,23 @@ func NewDB() *sql.DB {
 		os.Exit(-1)
 	}
 
-	db.Exec(`CREATE TABLE IF NOT EXISTS fuckups(
+	createGenericTextTable(db, "fuckups")
+	createGenericTextTable(db, "log")
+
+	return db
+}
+
+func createGenericTextTable(db *sql.DB, name string) {
+	db.Exec(fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s(
     id INTEGER PRIMARY KEY,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     text TEXT
-	)`)
-	db.Exec("CREATE INDEX IF NOT EXISTS fuckups_date_ix ON fuckups(date)")
+	)`, name))
+	db.Exec(fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s_date_ix ON %s(date)", name, name))
+}
 
-	return db
+func InsertGenericText(db *sql.DB, name string, text string) error {
+	_, err := db.Exec(fmt.Sprintf("INSERT INTO %s(text) VALUES(?)", name), text)
+
+	return err
 }
