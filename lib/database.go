@@ -18,6 +18,7 @@ func NewDB() *sql.DB {
 
 	createGenericTextTable(db, "fuckups")
 	createGenericTextTable(db, "log")
+	createGenericTextTable(db, "learn")
 
 	return db
 }
