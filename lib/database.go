@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
-	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/spf13/viper"
@@ -38,54 +37,4 @@ func InsertGenericText(db *sql.DB, name string, text string) error {
 	_, err := db.Exec(fmt.Sprintf("INSERT INTO %s(text) VALUES(?)", name), text)
 
 	return err
-}
-
-func GetLogBlockForToday(db *sql.DB, name string, header string) (LogBlock, error) {
-	entries, err := getForToday(db, name)
-
-	return LogBlock{
-		Header:     header,
-		LogEntries: entries,
-	}, err
-}
-
-func GetLogBlock(db *sql.DB, name string, header string, time time.Time) (LogBlock, error) {
-	entries, err := getForDate(db, name, time)
-
-	return LogBlock{
-		Header:     header,
-		LogEntries: entries,
-	}, err
-}
-
-func getForToday(db *sql.DB, name string) ([]LogEntry, error) {
-	return getForDate(db, name, time.Now().Local())
-}
-
-func getForDate(db *sql.DB, name string, date time.Time) ([]LogEntry, error) {
-	stmt, err := db.Prepare(
-		fmt.Sprintf("SELECT id, date, text FROM %s WHERE date >= ? AND date < ? ORDER BY date", name),
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	rows, err := stmt.Query(date.Truncate(time.Hour*24), date.AddDate(0, 0, 1).Truncate(time.Hour*24))
-	if err != nil {
-		return nil, err
-	} else {
-		var result []LogEntry
-		for rows.Next() {
-			var row LogEntry
-
-			err = rows.Scan(&row.Id, &row.Date, &row.Text)
-			if err != nil {
-				return nil, err
-			}
-
-			result = append(result, row)
-		}
-
-		return result, nil
-	}
 }
