@@ -33,9 +33,8 @@ func (l LogBlock) ToString() string {
 		logStrings = append(logStrings, v.ToString())
 	}
 
-	return fmt.Sprintf("%s\n%s\n\n%s\n",
+	return fmt.Sprintf("## %s\n\n%s\n",
 		l.Header,
-		strings.Repeat("=", len(l.Header)),
 		strings.Join(logStrings, "\n"),
 	)
 }
