@@ -64,7 +64,7 @@ You can specify a specific date using --date in ISO8601 date format.`,
 		fmt.Printf(`
 # Notes For %s
 
-`, date.Format("2006-01-02"))
+`, date.Format("Monday Jan 2, 2006"))
 
 		for _, v := range logs {
 			log, err := lib.GetLogBlock(db, v.DbName, v.Header, date)
