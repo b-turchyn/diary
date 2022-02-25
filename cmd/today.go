@@ -18,6 +18,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/b-turchyn/diary/lib"
 	"github.com/spf13/cobra"
@@ -28,16 +29,16 @@ type LogType struct {
 	Header string
 }
 
+var dateString string
+
 // todayCmd represents the today command
 var todayCmd = &cobra.Command{
 	Use:   "today",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Today's entries",
+	Long: `Get an output of all entries made on a day. With no parameters, outputs
+today's entries.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+You can specify a specific date using --date in ISO8601 date format.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logs := []LogType{
 			{DbName: "fuckups", Header: "On This Day I Screwed Up"},
@@ -46,8 +47,27 @@ to quickly create a Cobra application.`,
 		}
 		db := lib.NewDB()
 
+		var date time.Time
+		if dateString != "" {
+			var err error
+			date, err = time.Parse("2006-01-02", dateString)
+
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			date = date.Local()
+		} else {
+			date = time.Now()
+		}
+
+		fmt.Printf(`
+# Notes For %s
+
+`, date.Format("2006-01-02"))
+
 		for _, v := range logs {
-			log, err := lib.GetLogBlockForToday(db, v.DbName, v.Header)
+			log, err := lib.GetLogBlock(db, v.DbName, v.Header, date)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
@@ -70,4 +90,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// todayCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	todayCmd.Flags().StringVarP(&dateString, "date", "d", "", "Grab the log for a specific date (YYYY-MM-DD format)")
 }
