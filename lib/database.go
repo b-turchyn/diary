@@ -7,10 +7,11 @@ import (
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/spf13/viper"
 )
 
 func NewDB() *sql.DB {
-	db, err := sql.Open("sqlite3", "./diary.sqlite3")
+	db, err := sql.Open("sqlite3", viper.GetString("database"))
 
 	if err != nil {
 		fmt.Println(err)
