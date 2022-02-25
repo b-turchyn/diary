@@ -23,10 +23,14 @@ import (
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
+
+	"go.uber.org/zap"
 )
 
 var cfgFile string
 var databaseName string
+
+var logger *zap.Logger
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -47,12 +51,18 @@ to quickly create a Cobra application.`,
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
+		logger.Sugar().Error(err)
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
 func init() {
+	loggerConfig := zap.NewDevelopmentConfig()
+	loggerConfig.Level = zap.NewAtomicLevelAt(zap.InfoLevel)
+	logger, _ = loggerConfig.Build()
+	defer logger.Sync()
+
 	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
@@ -89,6 +99,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		logger.Info("Using config file:", zap.String("file", viper.ConfigFileUsed()))
 	}
 }
