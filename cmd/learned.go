@@ -26,13 +26,11 @@ import (
 // logCmd represents the log command
 var learnCmd = &cobra.Command{
 	Use:   "learn",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Make a note of something you learned",
+	Long: `Too frequently we forget that we learn all sorts of things in our day. When
+you learn something new, jot it down with this.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+It doesn't need to be big. Any small thing that you've learned can be celebrated!`,
 	Run: func(cmd *cobra.Command, args []string) {
 		input, err := lib.PromptForInput("What did you learn? ", args)
 
