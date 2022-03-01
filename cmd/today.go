@@ -39,7 +39,7 @@ today's entries.
 You can specify a specific date using --date in ISO8601 date format.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logs := []LogType{
-			{DbName: "fuckups", Header: "On This Day I Screwed Up"},
+			{DbName: "mistakes", Header: "On This Day I Screwed Up"},
 			{DbName: "log", Header: "On This Day I Did"},
 			{DbName: "learn", Header: "On This Day I Learned"},
 		}

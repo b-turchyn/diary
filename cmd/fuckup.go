@@ -27,14 +27,15 @@ import (
 
 // fuckupCmd represents the fuckup command
 var fuckupCmd = &cobra.Command{
-	Use:   "fuckup",
-	Short: "You messed up. Explain why.",
+	Aliases: []string{"fuckup"},
+	Use:     "mistake",
+	Short:   "You messed up. Explain why.",
 	Long: `You did something wrong. Write it out. Get it out of your system so you can learn
 	and grow from it.`,
 	Args: dateTimeArgsValidator,
 	Run: func(cmd *cobra.Command, args []string) {
 		t := lib.GetTime(overrideDate, overrideTime)
-		input, err := lib.PromptForInput("Where'd you fuck up? ", args)
+		input, err := lib.PromptForInput("What'd you do? What'd you learn? ", args)
 
 		if err != nil {
 			fmt.Println(err)
@@ -67,5 +68,5 @@ func init() {
 }
 
 func insertFuckup(db *sql.DB, t time.Time, text string) error {
-	return lib.InsertGenericText(db, "fuckups", t, text)
+	return lib.InsertGenericText(db, "mistakes", t, text)
 }

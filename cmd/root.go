@@ -46,23 +46,16 @@ var dateTimeArgsValidator = func(cmd *cobra.Command, args []string) error {
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "diary",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "Document your day-to-day activities",
+	Long: `A lot goes on in your day-to-day life. This aims to be a simple
+place to log all of that and be able to pull that information
+back quickly.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+This tracks what you're currently working on, what you learned,
+and where you made a mistake.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
-	Args: func(cmd *cobra.Command, args []string) error {
-		if overrideDate != "" && overrideTime == "" {
-			return errors.New("Time is required when a date is provided")
-		}
-
-		return nil
-	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

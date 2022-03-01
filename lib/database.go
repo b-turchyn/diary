@@ -18,7 +18,8 @@ func NewDB() *sql.DB {
 		os.Exit(-1)
 	}
 
-	createGenericTextTable(db, "fuckups")
+	renameTable(db, "fuckups", "mistakes")
+	createGenericTextTable(db, "mistakes")
 	createGenericTextTable(db, "log")
 	createGenericTextTable(db, "learn")
 
@@ -32,6 +33,10 @@ func createGenericTextTable(db *sql.DB, name string) {
     text TEXT
 	)`, name))
 	db.Exec(fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s_date_ix ON %s(date)", name, name))
+}
+
+func renameTable(db *sql.DB, oldName string, newName string) {
+	db.Exec(fmt.Sprintf(`ALTER TABLE %s RENAME TO %s`, oldName, newName))
 }
 
 func InsertGenericText(db *sql.DB, name string, t time.Time, text string) error {
