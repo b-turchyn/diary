@@ -27,7 +27,9 @@ import (
 var logCmd = &cobra.Command{
 	Use:   "log",
 	Short: "Log what you are currently doing",
+	Args:  dateTimeArgsValidator,
 	Run: func(cmd *cobra.Command, args []string) {
+		t := lib.GetTime(overrideDate, overrideTime)
 		input, err := lib.PromptForInput("What are you doing now? ", args)
 
 		if err != nil {
@@ -36,7 +38,7 @@ var logCmd = &cobra.Command{
 		}
 
 		db := lib.NewDB()
-		err = lib.InsertGenericText(db, "log", input)
+		err = lib.InsertGenericText(db, "log", t, input)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(2)

@@ -29,8 +29,6 @@ type LogType struct {
 	Header string
 }
 
-var dateString string
-
 // todayCmd represents the today command
 var todayCmd = &cobra.Command{
 	Use:   "today",
@@ -48,9 +46,9 @@ You can specify a specific date using --date in ISO8601 date format.`,
 		db := lib.NewDB()
 
 		var date time.Time
-		if dateString != "" {
+		if overrideDate != "" {
 			var err error
-			date, err = time.Parse("2006-01-02", dateString)
+			date, err = time.Parse("2006-01-02", overrideDate)
 
 			if err != nil {
 				fmt.Println(err)
@@ -90,5 +88,4 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// todayCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	todayCmd.Flags().StringVarP(&dateString, "date", "d", "", "Grab the log for a specific date (YYYY-MM-DD format)")
 }

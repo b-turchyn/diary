@@ -16,6 +16,7 @@ limitations under the License.
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -29,8 +30,18 @@ import (
 
 var cfgFile string
 var databaseName string
+var overrideDate string
+var overrideTime string
 
 var logger *zap.Logger
+
+var dateTimeArgsValidator = func(cmd *cobra.Command, args []string) error {
+	if overrideDate != "" && overrideTime == "" {
+		return errors.New("Time is required when a date is provided")
+	}
+
+	return nil
+}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -45,6 +56,13 @@ to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
+	Args: func(cmd *cobra.Command, args []string) error {
+		if overrideDate != "" && overrideTime == "" {
+			return errors.New("Time is required when a date is provided")
+		}
+
+		return nil
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -71,10 +89,8 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.diary.yaml)")
 	rootCmd.PersistentFlags().StringVar(&databaseName, "database", "~/diary.sqlite3", "Diary database (full path)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().StringVarP(&overrideDate, "date", "d", "", "Use a specific date (--time is required with this)")
+	rootCmd.PersistentFlags().StringVarP(&overrideTime, "time", "t", "", "Use a specific time")
 
 	viper.BindPFlag("database", rootCmd.PersistentFlags().Lookup("database"))
 }

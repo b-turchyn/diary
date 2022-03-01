@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/spf13/viper"
@@ -33,8 +34,8 @@ func createGenericTextTable(db *sql.DB, name string) {
 	db.Exec(fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s_date_ix ON %s(date)", name, name))
 }
 
-func InsertGenericText(db *sql.DB, name string, text string) error {
-	_, err := db.Exec(fmt.Sprintf("INSERT INTO %s(text) VALUES(?)", name), text)
+func InsertGenericText(db *sql.DB, name string, t time.Time, text string) error {
+	_, err := db.Exec(fmt.Sprintf("INSERT INTO %s(date, text) VALUES(?, ?)", name), t, text)
 
 	return err
 }

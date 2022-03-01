@@ -19,6 +19,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/b-turchyn/diary/lib"
 	"github.com/spf13/cobra"
@@ -30,7 +31,9 @@ var fuckupCmd = &cobra.Command{
 	Short: "You messed up. Explain why.",
 	Long: `You did something wrong. Write it out. Get it out of your system so you can learn
 	and grow from it.`,
+	Args: dateTimeArgsValidator,
 	Run: func(cmd *cobra.Command, args []string) {
+		t := lib.GetTime(overrideDate, overrideTime)
 		input, err := lib.PromptForInput("Where'd you fuck up? ", args)
 
 		if err != nil {
@@ -39,7 +42,7 @@ var fuckupCmd = &cobra.Command{
 		}
 
 		db := lib.NewDB()
-		err = insertFuckup(db, input)
+		err = insertFuckup(db, t, input)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(2)
@@ -63,6 +66,6 @@ func init() {
 	// fuckupCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func insertFuckup(db *sql.DB, text string) error {
-	return lib.InsertGenericText(db, "fuckups", text)
+func insertFuckup(db *sql.DB, t time.Time, text string) error {
+	return lib.InsertGenericText(db, "fuckups", t, text)
 }

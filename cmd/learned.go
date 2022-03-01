@@ -31,7 +31,9 @@ var learnCmd = &cobra.Command{
 you learn something new, jot it down with this.
 
 It doesn't need to be big. Any small thing that you've learned can be celebrated!`,
+	Args: dateTimeArgsValidator,
 	Run: func(cmd *cobra.Command, args []string) {
+		t := lib.GetTime(overrideDate, overrideTime)
 		input, err := lib.PromptForInput("What did you learn? ", args)
 
 		if err != nil {
@@ -40,7 +42,7 @@ It doesn't need to be big. Any small thing that you've learned can be celebrated
 		}
 
 		db := lib.NewDB()
-		err = lib.InsertGenericText(db, "learn", input)
+		err = lib.InsertGenericText(db, "learn", t, input)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(2)

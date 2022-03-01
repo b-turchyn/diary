@@ -70,7 +70,7 @@ func getForToday(db *sql.DB, name string) ([]LogEntry, error) {
 
 func getForDate(db *sql.DB, name string, date time.Time) ([]LogEntry, error) {
 	stmt, err := db.Prepare(
-		fmt.Sprintf("SELECT id, date, text FROM %s WHERE date >= ? AND date < ? ORDER BY date", name),
+		fmt.Sprintf("SELECT id, date, text FROM %s WHERE datetime(date) >= ? AND datetime(date) < ? ORDER BY datetime(date)", name),
 	)
 	if err != nil {
 		return nil, err
