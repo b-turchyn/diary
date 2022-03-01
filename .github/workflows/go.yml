@@ -22,14 +22,14 @@ jobs:
         go-version: 1.17
 
     - name: Build
-      run: go build -v ./...
+      run:
+        - go build -v ./...
+        - ls
 
     - name: Test
       run: go test -v ./...
       
     - uses: actions/upload-artifact@v2
       with:
-        name: binary
-        path: |
-          diary
-          diary.exe
+        name: diary-${{ env.GOOS }}_${{ env.GOARCH }}
+        path: diary
