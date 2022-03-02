@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-linux:
-    uses: ./.github/workflows/go-build
+    uses: ./.github/workflows/go-build.yml
     with:
       os: ubuntu-latest
       build-file: diary
