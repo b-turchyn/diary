@@ -36,3 +36,4 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         path: ${{ inputs.output-file }}
+        name: ${{ inputs.output-file }}
