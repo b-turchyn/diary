@@ -46,15 +46,6 @@ func (l LogEntry) ToString() string {
 	)
 }
 
-func GetLogBlockForToday(db *sql.DB, name string, header string) (LogBlock, error) {
-	entries, err := getForToday(db, name)
-
-	return LogBlock{
-		Header:     header,
-		LogEntries: entries,
-	}, err
-}
-
 func GetLogBlock(db *sql.DB, name string, header string, time time.Time) (LogBlock, error) {
 	entries, err := getForDate(db, name, time)
 
@@ -64,22 +55,21 @@ func GetLogBlock(db *sql.DB, name string, header string, time time.Time) (LogBlo
 	}, err
 }
 
-func getForToday(db *sql.DB, name string) ([]LogEntry, error) {
-	return getForDate(db, name, time.Now().Local())
-}
-
 func getForDate(db *sql.DB, name string, date time.Time) ([]LogEntry, error) {
-	stmt, err := db.Prepare(
-		fmt.Sprintf("SELECT id, date, text FROM %s WHERE datetime(date) >= ? AND datetime(date) < ? ORDER BY datetime(date)", name),
+	stmt, err := db.Prepare(fmt.Sprintf(`
+SELECT id, date, text
+  FROM %s
+ WHERE datetime(date) >= datetime(?)
+   AND datetime(date) < datetime(?)
+ ORDER BY datetime(date)`, name),
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	date = date.UTC()
-
-	startDate := date.Truncate(24 * time.Hour)
-	endDate := date.AddDate(0, 0, 1).Truncate(time.Hour * 24)
+	// time.Truncate does not take into account time zone; we need to do this ourselves
+	startDate := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Local().Location())
+	endDate := date.AddDate(0, 0, 1)
 
 	rows, err := stmt.Query(startDate, endDate)
 	if err != nil {

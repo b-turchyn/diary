@@ -54,10 +54,11 @@ You can specify a specific date using --date in ISO8601 date format.`,
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			date = date.Local()
 		} else {
 			date = time.Now()
 		}
+		// Truncate the time and ensure we are working in the local timezone
+		date = time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Local().Location())
 
 		fmt.Printf(`
 # Notes For %s
