@@ -15,14 +15,14 @@ jobs:
       output-file: diary-linux_x64.tar.gz
       
   build-macOS:
-    uses: ./.github/workflows/go-build
+    uses: ./.github/workflows/go-build.yml
     with:
       os: macOS-latest
       build-file: diary
       output-file: diary-darwin_x64.tar.gz
       
   build-windows:
-    uses: ./.github/workflows/go-build
+    uses: ./.github/workflows/go-build.yml
     with:
       os: windows-latest
       build-file: diary.exe
