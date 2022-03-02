@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/b-turchyn/diary/lib"
 	"github.com/spf13/cobra"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -45,8 +46,9 @@ var dateTimeArgsValidator = func(cmd *cobra.Command, args []string) error {
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "diary",
-	Short: "Document your day-to-day activities",
+	Version: lib.VERSION,
+	Use:     "diary",
+	Short:   "Document your day-to-day activities",
 	Long: `A lot goes on in your day-to-day life. This aims to be a simple
 place to log all of that and be able to pull that information
 back quickly.
