@@ -47,7 +47,7 @@ It doesn't need to be big. Any small thing that you've learned can be celebrated
 			fmt.Println(err)
 			os.Exit(2)
 		} else {
-			fmt.Println("Recorded:", input)
+			fmt.Println(lib.PrimaryText("Recorded:"), input)
 		}
 	},
 }

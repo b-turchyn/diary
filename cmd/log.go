@@ -43,7 +43,7 @@ var logCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(2)
 		} else {
-			fmt.Println("Recorded:", input)
+			fmt.Println(lib.PrimaryText("Recorded:"), input)
 		}
 	},
 }

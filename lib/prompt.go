@@ -14,7 +14,7 @@ func PromptForInput(prompt string, args []string) (string, error) {
 	var input string
 
 	if len(args) == 0 {
-		fmt.Print(prompt)
+		fmt.Print(PrimaryText(prompt))
 		scanner := bufio.NewScanner(os.Stdin)
 
 		for scanner.Scan() {

@@ -60,10 +60,9 @@ You can specify a specific date using --date in ISO8601 date format.`,
 		// Truncate the time and ensure we are working in the local timezone
 		date = time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Local().Location())
 
-		fmt.Printf(`
-# Notes For %s
+		fmt.Printf(lib.PrimaryText(`# Notes For %s
 
-`, date.Format("Monday Jan 2, 2006"))
+`), date.Format("Monday Jan 2, 2006"))
 
 		for _, v := range logs {
 			log, err := lib.GetLogBlock(db, v.DbName, v.Header, date)

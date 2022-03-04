@@ -26,6 +26,11 @@ type logEntry interface {
 	ToString() string
 }
 
+const LOGBLOCK_HEADER_TTY = COLOR_SECONDARY + "## %s" + COLOR_RESET + "\n\n%s\n"
+const LOGBLOCK_HEADER_NOTTY = "## %s\n\n%s\n"
+const LOGENTRY_TTY = COLOR_TERTIARY + "- %s:" + COLOR_RESET + " %s"
+const LOGENTRY_NOTTY = "- %s: %s"
+
 func (l LogBlock) ToString() string {
 	var logStrings []string
 
@@ -33,14 +38,14 @@ func (l LogBlock) ToString() string {
 		logStrings = append(logStrings, v.ToString())
 	}
 
-	return fmt.Sprintf("## %s\n\n%s\n",
+	return fmt.Sprintf(ttyCheck(LOGBLOCK_HEADER_TTY, LOGBLOCK_HEADER_NOTTY),
 		l.Header,
 		strings.Join(logStrings, "\n"),
 	)
 }
 
 func (l LogEntry) ToString() string {
-	return fmt.Sprintf("- %s: %s",
+	return fmt.Sprintf(ttyCheck(LOGENTRY_TTY, LOGENTRY_NOTTY),
 		l.Date.Local().Format("15:04"),
 		l.Text,
 	)

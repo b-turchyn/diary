@@ -33,6 +33,8 @@ var cfgFile string
 var databaseName string
 var overrideDate string
 var overrideTime string
+var color bool
+var logDebug bool
 
 var logger *zap.Logger
 
@@ -71,11 +73,6 @@ func Execute() {
 }
 
 func init() {
-	loggerConfig := zap.NewDevelopmentConfig()
-	loggerConfig.Level = zap.NewAtomicLevelAt(zap.InfoLevel)
-	logger, _ = loggerConfig.Build()
-	defer logger.Sync()
-
 	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
@@ -86,8 +83,12 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&databaseName, "database", "~/diary.sqlite3", "Diary database (full path)")
 	rootCmd.PersistentFlags().StringVarP(&overrideDate, "date", "d", "", "Use a specific date (--time is required with this)")
 	rootCmd.PersistentFlags().StringVarP(&overrideTime, "time", "t", "", "Use a specific time")
+	rootCmd.PersistentFlags().BoolVar(&color, "color", true, "Control colored output on TTY")
+	rootCmd.PersistentFlags().BoolVar(&logDebug, "debug", false, "Write more verbose logs")
 
 	viper.BindPFlag("database", rootCmd.PersistentFlags().Lookup("database"))
+	viper.BindPFlag("color", rootCmd.PersistentFlags().Lookup("color"))
+	viper.BindPFlag("log.debug", rootCmd.PersistentFlags().Lookup("debug"))
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -109,7 +110,25 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
+	// Logger needs to be init'd before running logger, so it exists twice here
 	if err := viper.ReadInConfig(); err == nil {
-		logger.Info("Using config file:", zap.String("file", viper.ConfigFileUsed()))
+		initLogger()
+		logger.Debug("Using config file:", zap.String("file", viper.ConfigFileUsed()))
+	} else {
+		initLogger()
 	}
+}
+
+/**
+ * Build logger from provided configuration
+ */
+func initLogger() {
+	loggerConfig := zap.NewDevelopmentConfig()
+	if viper.GetBool("log.debug") {
+		loggerConfig.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
+	} else {
+		loggerConfig.Level = zap.NewAtomicLevelAt(zap.InfoLevel)
+	}
+	logger, _ = loggerConfig.Build()
+	defer logger.Sync()
 }
