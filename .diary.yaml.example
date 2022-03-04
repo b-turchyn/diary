@@ -1,1 +1,4 @@
 database: /home/username/diary.sqlite3
+color: true
+log:
+  debug: false

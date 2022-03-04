@@ -29,11 +29,10 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-
-    - name: Tarball File
-      run: tar cfz ${{ inputs.output-file }} .diary.yaml.example ${{ inputs.build-file }}
     
     - uses: actions/upload-artifact@v2
       with:
-        path: ${{ inputs.output-file }}
+        path: |
+          ${{ inputs.build-file }}
+          .diary.yaml.example
         name: ${{ inputs.output-file }}
