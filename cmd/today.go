@@ -18,6 +18,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/b-turchyn/diary/lib"
@@ -60,9 +61,9 @@ You can specify a specific date using --date in ISO8601 date format.`,
 		// Truncate the time and ensure we are working in the local timezone
 		date = time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Local().Location())
 
-		fmt.Printf(lib.PrimaryText(`# Notes For %s
-
-`), date.Format("Monday Jan 2, 2006"))
+		output := []string{
+			fmt.Sprintf(lib.PrimaryText("# Notes For %s\n"), date.Format("Monday Jan 2, 2006")),
+		}
 
 		for _, v := range logs {
 			log, err := lib.GetLogBlock(db, v.DbName, v.Header, date)
@@ -71,8 +72,13 @@ You can specify a specific date using --date in ISO8601 date format.`,
 				os.Exit(1)
 			}
 
-			fmt.Println(log.ToString())
+			o := log.ToString()
+			if o != "" {
+				output = append(output, o)
+			}
 		}
+
+		fmt.Println(strings.Join(output, "\n"))
 	},
 }
 

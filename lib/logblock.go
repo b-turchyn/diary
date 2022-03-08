@@ -38,6 +38,10 @@ func (l LogBlock) ToString() string {
 		logStrings = append(logStrings, v.ToString())
 	}
 
+	if len(l.LogEntries) == 0 {
+		return ""
+	}
+
 	return fmt.Sprintf(ttyCheck(LOGBLOCK_HEADER_TTY, LOGBLOCK_HEADER_NOTTY),
 		l.Header,
 		strings.Join(logStrings, "\n"),
